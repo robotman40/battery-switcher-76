@@ -1,0 +1,10 @@
+[Unit]
+Description=Battery-Switcher-76-Service startup component
+After=default.target
+
+[Service]
+Type=simple
+ExecStart=battery-switcher-76-service
+
+[Install]
+WantedBy=default.target

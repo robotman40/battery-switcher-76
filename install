@@ -1,0 +1,65 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+import subprocess as sp
+import importlib.util
+import configparser
+
+# Check if the required libraries are installed
+
+def remove_file(dir):
+    if os.path.isfile(dir):
+        sp.run(["sudo", "rm", dir], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+
+if __name__ == "__main__":
+    if importlib.util.find_spec("PyInstaller") is None:
+        print("Please install PyInstaller to continue. It can be done by typing `pip install pyinstaller` in a terminal.")
+        sys.exit(2)
+
+    if importlib.util.find_spec("psutil") is None:
+        print("Please install psutil to continue. It can be done by typing `pip install psutil` in a terminal.")
+        sys.exit(2)
+
+    try:
+        # Compile the Python scripts with PyInstaller
+        print("Compiling battery-switcher-76...")
+        sp.run(["pyinstaller", "src/battery-switcher-76", "--onefile"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+        print("Compiling battery-switcher-76-service...")
+        sp.run(["pyinstaller", "src/battery-switcher-76-service", "--onefile"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+
+        # Move the files (Requries sudo privileges)
+        print("Moving battery-switcher-76 to /usr/local/bin/...")
+        sp.run(["sudo", "cp", "dist/battery-switcher-76", "/usr/local/bin/battery-switcher-76"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+        sp.run(["sudo", "chmod", "755", "/usr/local/bin/battery-switcher-76"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+
+        print("Moving battery-switcher-76-service to /usr/local/bin/...")
+        sp.run(["sudo", "cp", "dist/battery-switcher-76-service", "/usr/local/bin/battery-switcher-76-service"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+        sp.run(["sudo", "chmod", "755", "/usr/local/bin/battery-switcher-76-service"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+
+        # Create the configuration file if it doesn't exist
+        if not os.path.exists("/usr/local/etc/battery-switcher-76/config.ini"):
+            print("Creating battery-switcher-76 configuration file")
+            config = configparser.ConfigParser()
+            config["Config"] = {"OnBattery": "battery", "Charging": "performance"}
+            with open("dist/config.ini", 'w') as configfile:
+                config.write(configfile)
+
+            sp.run(["sudo", "mkdir", "-p", "/usr/local/etc/battery-switcher-76"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+            sp.run(["sudo", "cp", "dist/config.ini", "/usr/local/etc/battery-switcher-76/config.ini"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+
+        # Add the systemd service
+        print("Creating systemd service")
+        sp.run(["sudo", "cp", "src/systemd/battery-switcher-76.service", "/etc/systemd/system/battery-switcher-76.service"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+        print("Starting systemd service")
+        sp.run(["sudo", "systemctl", "start", "battery-switcher-76"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+        print("Enabling systemd service")
+        sp.run(["sudo", "systemctl", "enable", "battery-switcher-76"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+    except Exception as e:
+        print(f"Something went wrong with the installation. All installed contents will be removed.\nError: {e}")
+
+        # Remove relevant files
+        remove_file("/usr/local/bin/battery-switcher-76")
+        remove_file("/usr/local/bin/battery-switcher-76-service")
+        remove_file("/usr/local/etc/battery-switcher-76/config.ini")
+        remove_file("/etc/systemd/system/battery-switcher-76.service")
