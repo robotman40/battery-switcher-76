@@ -24,7 +24,7 @@ Power profiles:
 On Battery Power: battery
 Charging: performance
 ```
-To get information about the configuration about a specific power profile, type `battery-switcher-76 [power state]` with the valid options for `[power state]` being `onbattery` and `charging`. For example, if you type `battery-switcher-76 battery-switcher-76 charging`, you may get:
+To get information about the configuration about a specific power profile, type `battery-switcher-76 [power state]` with the valid options for `[power state]` being `onbattery` and `charging`. For example, if you type `battery-switcher-76 charging`, you may get:
 ```
 performance
 ```
