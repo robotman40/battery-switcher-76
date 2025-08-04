@@ -9,9 +9,19 @@ import shutil
 
 # Check if the required libraries are installed
 
+# List for important binary directories in the installation process
+bin_directories = (("dist/battery-switcher-76", "/usr/local/bin/battery-switcher-76",),
+               ("dist/battery-switcher-76-service", "/usr/local/bin/battery-switcher-76-service"))
+
 def remove_file(dir):
     if os.path.isfile(dir):
         sp.run(["sudo", "rm", dir], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+
+def remove_build_leftovers():
+    shutil.rmtree("dist")
+    shutil.rmtree("build")
+    os.remove("./battery-switcher-76.spec")
+    os.remove("./battery-switcher-76-service.spec")
 
 if __name__ == "__main__":
     if importlib.util.find_spec("PyInstaller") is None:
@@ -30,32 +40,32 @@ if __name__ == "__main__":
         sp.run(["pyinstaller", "src/battery-switcher-76-service.py", "--onefile"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
 
         # Move the files (Requries sudo privileges)
-        print("Moving battery-switcher-76 to /usr/local/bin/...")
-        sp.run(["sudo", "cp", "dist/battery-switcher-76", "/usr/local/bin/battery-switcher-76"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
-        sp.run(["sudo", "chmod", "755", "/usr/local/bin/battery-switcher-76"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
-
-        print("Moving battery-switcher-76-service to /usr/local/bin/...")
-        sp.run(["sudo", "cp", "dist/battery-switcher-76-service", "/usr/local/bin/battery-switcher-76-service"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
-        sp.run(["sudo", "chmod", "755", "/usr/local/bin/battery-switcher-76-service"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+        print("Please enter your sudo password to procceed with the installation")
+        for paths in bin_directories:
+            sp.run(["sudo", "cp", paths[0], paths[1]], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+            sp.run(["sudo", "chmod", "755", paths[1]], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+            print(f"Moved {paths[0][5:]} to {paths[1]}")
 
         # Create the configuration file if it doesn't exist
         if not os.path.exists("/usr/local/etc/battery-switcher-76/config.ini"):
-            print("Creating battery-switcher-76 configuration file")
             config = configparser.ConfigParser()
             config["Config"] = {"OnBattery": "battery", "Charging": "performance"}
             with open("dist/config.ini", 'w') as configfile:
                 config.write(configfile)
+            print("Created configuration file")
 
             sp.run(["sudo", "mkdir", "-p", "/usr/local/etc/battery-switcher-76"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
             sp.run(["sudo", "cp", "dist/config.ini", "/usr/local/etc/battery-switcher-76/config.ini"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+        else:
+            print("Configuration file already exists")
 
         # Add the systemd service
-        print("Creating systemd service")
         sp.run(["sudo", "cp", "src/systemd/battery-switcher-76.service", "/etc/systemd/system/battery-switcher-76.service"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
-        print("Starting systemd service")
+        print("Created systemd service")
         sp.run(["sudo", "systemctl", "start", "battery-switcher-76"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
-        print("Enabling systemd service")
+        print("Started systemd service")
         sp.run(["sudo", "systemctl", "enable", "battery-switcher-76"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+        print("Enabled systemd service")
 
         # Delete leftover files
         shutil.rmtree("dist")
@@ -67,7 +77,10 @@ if __name__ == "__main__":
         print(f"Something went wrong with the installation. All installed contents will be removed.\nError: {e}")
 
         # Remove relevant files
-        remove_file("/usr/local/bin/battery-switcher-76")
-        remove_file("/usr/local/bin/battery-switcher-76-service")
+        for paths in bin_directories:
+            remove_file(paths[1])
         remove_file("/usr/local/etc/battery-switcher-76/config.ini")
         remove_file("/etc/systemd/system/battery-switcher-76.service")
+
+        # Remove build leftovers
+        remove_build_leftovers()
