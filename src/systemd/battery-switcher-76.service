@@ -1,10 +1,27 @@
-[Unit]
-Description=Battery-Switcher-76-Service startup component
-After=default.target
-
 [Service]
 Type=simple
 ExecStart=battery-switcher-76-service
+Restart=on-failure
+RestartSec=10
+WorkingDirectory=/usr/local/etc/battery-switcher-76
+
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectControlGroups=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+MemoryDenyWriteExecute=yes
+LockPersonality=yes
+ProtectClock=no
+ProtectHostname=yes
+ProtectKernelLogs=yes
+PrivateUsers=yes
+PrivateNetwork=yes
 
 [Install]
 WantedBy=default.target
