@@ -43,3 +43,6 @@ If you need help using the program, you can type `battery-switcher-76 help` to p
 - Binaries for other distros
 
 While I am working actively on the planned updates, I am not doing the same for the potential ones and it may or may not come. I am going to start university relatively soon, which may siphon my time away from working on this project.
+
+## Credits
+- taxmeifyoucan
