@@ -68,10 +68,7 @@ if __name__ == "__main__":
         print("Enabled systemd service")
 
         # Delete leftover files
-        shutil.rmtree("dist")
-        shutil.rmtree("build")
-        os.remove("./battery-switcher-76.spec")
-        os.remove("./battery-switcher-76-service.spec")
+        remove_build_leftovers()
  
     except Exception as e:
         print(f"Something went wrong with the installation. All installed contents will be removed.\nError: {e}")
