@@ -25,9 +25,9 @@ if __name__ == "__main__":
     try:
         # Compile the Python scripts with PyInstaller
         print("Compiling battery-switcher-76...")
-        sp.run(["pyinstaller", "src/battery-switcher-76", "--onefile"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+        sp.run(["pyinstaller", "src/battery-switcher-76.py", "--onefile"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
         print("Compiling battery-switcher-76-service...")
-        sp.run(["pyinstaller", "src/battery-switcher-76-service", "--onefile"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+        sp.run(["pyinstaller", "src/battery-switcher-76-service.py", "--onefile"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
 
         # Move the files (Requries sudo privileges)
         print("Moving battery-switcher-76 to /usr/local/bin/...")
