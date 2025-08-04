@@ -5,6 +5,7 @@ import sys
 import subprocess as sp
 import importlib.util
 import configparser
+import shutil
 
 # Check if the required libraries are installed
 
@@ -55,6 +56,13 @@ if __name__ == "__main__":
         sp.run(["sudo", "systemctl", "start", "battery-switcher-76"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
         print("Enabling systemd service")
         sp.run(["sudo", "systemctl", "enable", "battery-switcher-76"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+
+        # Delete leftover files
+        shutil.rmtree("dist")
+        shutil.rmtree("build")
+        os.remove("./battery-switcher-76.spec")
+        os.remove("./battery-switcher-76-service.spec")
+ 
     except Exception as e:
         print(f"Something went wrong with the installation. All installed contents will be removed.\nError: {e}")
 
