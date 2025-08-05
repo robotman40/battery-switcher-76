@@ -38,5 +38,7 @@ if __name__ == "__main__":
                 print(config["Config"][commands[1]])
         elif commands[1] == "help":
             print("To change your system's battery profile, follow the command format below:\n\nbattery-switcher-76 [power state] [profile]\n\nValid options for [power state] are \"onbattery\" and \"charging\"\n\nValid options for [profile] are \"battery\", \"balanced\", and \"performance\".")
+        elif commands[1] == "version":
+            pass
         else:
             print("An invalid option was inputted. Type \"battery-switcher-76 help\" for a brief guide.")

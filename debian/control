@@ -1,0 +1,5 @@
+Package: battery-switcher-76
+Version: 0.0.1
+Architecture: amd64
+Maintainer: Chris Rios <robotman40@protonmail.com>
+Description: An automatic power profile manager for Linux systems running system76-power
