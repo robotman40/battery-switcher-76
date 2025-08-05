@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     # Version information
     version = configparser.ConfigParser()
-    config.read("/usr/local/etc/battery-switcher-76/version.ini")
+    version.read("/usr/local/etc/battery-switcher-76/version.ini")
     
     if len(commands) == 1:
         print(f"Power profiles:\nOn Battery Power: {config['Config']['OnBattery']}\nCharging: {config['Config']['Charging']}")

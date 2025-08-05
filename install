@@ -40,9 +40,9 @@ if __name__ == "__main__":
         sp.run(["pyinstaller", "src/battery-switcher-76-service.py", "--onefile"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
 
         # Check how the user wants to build and install the package
-        if sys.argv[1] == "-d" or sys.argv[1] == "--debian": # Build Debian package
+        if len(sys.argv) > 1 and (sys.argv[1] == "-d" or sys.argv[1] == "--debian"): # Build Debian package
             print("Building a Debian package...")
-        elif sys.argv[1] == "-t" or sys.argv[1] == "--tar": # Build a tar.gz archive with installation script
+        elif len(sys.argv) > 1 and (sys.argv[1] == "-t" or sys.argv[1] == "--tar"): # Build a tar.gz archive with installation script
             pass
         else: # Install locally if no arguments are provided
             # Move the files (Requries sudo privileges)
