@@ -41,9 +41,11 @@ if __name__ == "__main__":
 
         # Check how the user wants to build and install the package
         if len(sys.argv) > 1 and (sys.argv[1] == "-d" or sys.argv[1] == "--debian"): # Build Debian package
-            print("Building a Debian package...")
+            print("Debian packaging building is not currently supported...")
+            sys.exit(3)
         elif len(sys.argv) > 1 and (sys.argv[1] == "-t" or sys.argv[1] == "--tar"): # Build a tar.gz archive with installation script
-            pass
+            print(".tar.gz archive building is not currently supported")
+            sys.exit(3)
         else: # Install locally if no arguments are provided
             # Move the files (Requries sudo privileges)
             print("Please enter your sudo password to procceed with the installation")
