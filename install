@@ -20,8 +20,8 @@ def remove_file(dir):
 def remove_build_leftovers():
     shutil.rmtree("dist")
     shutil.rmtree("build")
-    os.remove("./battery-switcher-76.spec")
-    os.remove("./battery-switcher-76-service.spec")
+    os.remove("battery-switcher-76.spec")
+    os.remove("battery-switcher-76-service.spec")
 
 if __name__ == "__main__":
     if importlib.util.find_spec("PyInstaller") is None:
@@ -95,6 +95,7 @@ if __name__ == "__main__":
         for paths in bin_directories:
             remove_file(paths[1])
         remove_file("/usr/local/etc/battery-switcher-76/config.ini")
+        remove_file("/usr/local/etc/battery-switcher-76/version.ini")
         remove_file("/etc/systemd/system/battery-switcher-76.service")
 
         # Remove build leftovers

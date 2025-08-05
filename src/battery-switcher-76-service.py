@@ -1,15 +1,24 @@
 import psutil
 import time
 import configparser
+import os
 from lib import bs76_lib
+import sys
 
 if __name__ == "__main__":
     # Initialize previous charging state
     prev_charging_state = None
 
+    # Install type
+    install_type = bs76_lib.get_install_type(os.path.dirname(sys.executable))
+
     while True:
+        # Read the configuration file
         config = configparser.ConfigParser()
-        config.read("/usr/local/etc/battery-switcher-76/config.ini")
+        if install_type == bs76_lib.install_type.local:
+            config.read("/usr/local/etc/battery-switcher-76/config.ini")
+        elif install_type == bs76_lib.install_type.package:
+            config.read("/etc/battery-switcher-76/config.ini")
         
         battery = psutil.sensors_battery()
         charging_state = battery.power_plugged

@@ -10,6 +10,9 @@ if __name__ == "__main__":
     file and to avoid printing unneeded data at the moment, we will check for a flag from the install script
     """
 
+    # Install type
+    install_type = bs76_lib.get_install_type(os.path.dirname(sys.executable))
+
     # Command line items
     commands = sys.argv
 
@@ -18,11 +21,17 @@ if __name__ == "__main__":
 
     # Config file
     config = configparser.ConfigParser()
-    config.read("/usr/local/etc/battery-switcher-76/config.ini")
+    if install_type == bs76_lib.install_type.local:
+        config.read("/usr/local/etc/battery-switcher-76/config.ini")
+    elif install_type == bs76_lib.install_type.package:
+        config.read("/etc/battery-switcher-76/config.ini")
 
     # Version information
     version = configparser.ConfigParser()
-    version.read("/usr/local/etc/battery-switcher-76/version.ini")
+    if install_type == bs76_lib.install_type.local:
+        version.read("/usr/local/etc/battery-switcher-76/version.ini")
+    elif install_type == bs76_lib.install_type.package:
+        version.read("/etc/battery-switcher-76/version.ini")
     
     if len(commands) == 1:
         print(f"Power profiles:\nOn Battery Power: {config['Config']['OnBattery']}\nCharging: {config['Config']['Charging']}")
