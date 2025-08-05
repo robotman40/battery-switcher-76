@@ -10,13 +10,19 @@ if __name__ == "__main__":
     file and to avoid printing unneeded data at the moment, we will check for a flag from the install script
     """
 
-    if len(sys.argv) > 1 and sys.argv[1] == "--first-run":
-        sys.exit(0)
-
-    config = configparser.ConfigParser()
-    config.read("/usr/local/etc/battery-switcher-76/config.ini")
     # Command line items
     commands = sys.argv
+
+    if len(commands) > 1 and commands[1] == "--first-run":
+        sys.exit(0)
+
+    # Config file
+    config = configparser.ConfigParser()
+    config.read("/usr/local/etc/battery-switcher-76/config.ini")
+
+    # Version information
+    version = configparser.ConfigParser()
+    config.read("/usr/local/etc/battery-switcher-76/version.ini")
     
     if len(commands) == 1:
         print(f"Power profiles:\nOn Battery Power: {config['Config']['OnBattery']}\nCharging: {config['Config']['Charging']}")
@@ -39,6 +45,6 @@ if __name__ == "__main__":
         elif commands[1] == "help":
             print("To change your system's battery profile, follow the command format below:\n\nbattery-switcher-76 [power state] [profile]\n\nValid options for [power state] are \"onbattery\" and \"charging\"\n\nValid options for [profile] are \"battery\", \"balanced\", and \"performance\".")
         elif commands[1] == "version":
-            pass
+            print(f"{version["Version"]["Major"]}.{version["Version"]["Minor"]}.{version["Version"]["Patch"]}")
         else:
             print("An invalid option was inputted. Type \"battery-switcher-76 help\" for a brief guide.")
