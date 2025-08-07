@@ -22,21 +22,19 @@ if __name__ == "__main__":
 
     while True:
         charging_state = bs76_lib.get_power_state()
-        current_modified_config = os.path.getmtime(config_path)
 
-        # Only change profile if charging state changed or config file has been updated
-        if charging_state != prev_charging_state or current_modified_config != last_modified_config:
-            # Read the configuration file
-            config = configparser.ConfigParser()
-            config.read(config_path)
+        # Read the configuration file
+        config = configparser.ConfigParser()
+        config.read(config_path)
 
-            # Always update the power profile if config or charging state changes
+        # Only change profile if charging state changed
+        if charging_state != prev_charging_state:
+            # Always update the power profile if charging state changes
             if charging_state == bs76_lib.power_state.charging:
                 bs76_lib.change_power_profile(config['Config']['Charging'])
             elif charging_state == bs76_lib.power_state.onbattery:
                 bs76_lib.change_power_profile(config['Config']['OnBattery'])
 
             prev_charging_state = charging_state
-            last_modified_config = current_modified_config
 
         time.sleep(3) # Three second delay before next check to prevent high CPU usage

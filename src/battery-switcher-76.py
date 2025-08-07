@@ -43,6 +43,10 @@ if __name__ == "__main__":
                         config["Config"][commands[1]] = commands[2]
                         with open("/usr/local/etc/battery-switcher-76/config.ini", 'w') as configfile:
                             config.write(configfile)
+
+                        # Manually change the power profile state
+                        if (bs76_lib.get_power_state() == bs76_lib.power_state.charging and commands[1] == "charging") or (bs76_lib.get_power_state() == bs76_lib.power_state.onbattery and commands[1] == "onbattery"):
+                            bs76_lib.change_power_profile(commands[2])
                     else:
                         print("Root privileges is required to change the configuration")
                 else:
