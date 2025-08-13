@@ -53,9 +53,16 @@ if __name__ == "__main__":
                     print("An invalid power profile was inputted.")
             else:
                 print(config["Config"][commands[1]])
-        elif commands[1] == "help":
-            print("To change your system's battery profile, follow the command format below:\n\nbattery-switcher-76 [power state] [profile]\n\nValid options for [power state] are \"onbattery\" and \"charging\"\n\nValid options for [profile] are \"battery\", \"balanced\", and \"performance\".")
+        elif commands[1] in ["disable", "enable"]:
+            if os.getuid() == 0:
+                bs76_lib.change_service_state(commands[1])
+            else:
+                print("Enabling/disabling battery-switcher-76 requires root privileges.")
         elif commands[1] == "version":
             print(f"{version["Version"]["Major"]}.{version["Version"]["Minor"]}.{version["Version"]["Patch"]}")
+        elif commands[1] == "help":
+            print("To change your system's battery profile, follow the command format below:\n\nsudo battery-switcher-76 [power state] [profile]\n\nValid options for [power state] are \"onbattery\" and \"charging\".\n\nValid options for [profile] are \"battery\", \"balanced\", and \"performance\".\n\n")
+            print("To simply get the configured power profile for a certain battery state, follow the command format below:\n\nbattery-switcher-76 [power state]\n\nValid options for [power state] are \"onbattery\" and \"charging\".\n\n")
+            print("To disable or enable the program, follow the command format below:\n\nsudo battery-switcher-76 [disable/enable].")
         else:
             print("An invalid option was inputted. Type \"battery-switcher-76 help\" for a brief guide.")

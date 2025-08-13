@@ -27,3 +27,11 @@ def get_power_state():
         return power_state.charging
     else:
         return power_state.onbattery
+    
+def change_service_state(state):
+    if state == "enable":
+        sp.run(["sudo", "systemctl", "enable", "battery-switcher-76"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+    elif state == "disable":
+        sp.run(["sudo", "systemctl", "disable", "battery-switcher-76"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+    else:
+        raise Exception("An invalid service state option was given")
