@@ -40,7 +40,7 @@ if __name__ == "__main__":
         sp.run(["pyinstaller", "src/battery-switcher-76-service.py", "--onefile"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
 
         # Check how the user wants to build and install the package
-        if len(sys.argv) > 1 and (sys.argv[1] == "-d" or sys.argv[1] == "--debian"): # Build Debian package
+        if len(sys.argv) > 1 and (sys.argv[1] == "-from pysystemd import ServiceStatus, ServiceManagerd" or sys.argv[1] == "--debian"): # Build Debian package
             print("Debian packaging building is not currently supported...")
             sys.exit(3)
         elif len(sys.argv) > 1 and (sys.argv[1] == "-t" or sys.argv[1] == "--tar"): # Build a tar.gz archive with installation script
@@ -80,6 +80,13 @@ if __name__ == "__main__":
         # Add the systemd service
         sp.run(["sudo", "cp", "src/systemd/battery-switcher-76.service", "/etc/systemd/system/battery-switcher-76.service"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
         print("Created systemd service")
+        # Check if a systemd service is active, if so, disable it
+        try:
+            sp.run(["sudo", "systemctl", "stop", "battery-switcher-76"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+            print("Stopped installed systemd service")
+        except:
+            pass
+        # Start the service if new and restart if disabled
         sp.run(["sudo", "systemctl", "start", "battery-switcher-76"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
         print("Started systemd service")
         sp.run(["sudo", "systemctl", "enable", "battery-switcher-76"], stdout=sp.DEVNULL, stderr=sp.DEVNULL)
